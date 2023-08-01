@@ -22,7 +22,9 @@
 					"GitHub.copilot-chat",
 					"ms-python.vscode-pylance",
 					"ms-python.python",
-					"GitHub.vscode-pull-request-github"
+					"GitHub.vscode-pull-request-github",
+					"ZainChen.json",
+					"mohsen1.prettify-json"
 				]
 			}
 		},
