@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CVEs</title>
+    <style>
+        header {
+            background-color: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+        }
+        .badge {
+            display: inline-flex;
+        }
+        .badge > div {
+            padding: 2px 10px;
+            font-size: 10px;
+            font-weight: normal;
+            border-radius: 4px;
+        }
+        .badge > a > div {
+            padding: 2px 10px;
+            font-size: 10px;
+            font-weight: normal;
+            border-radius: 4px;
+        }
+        .part1 {
+            background-color: #9a9a9a;
+            color: white;
+            width: 80px;
+        }
+        .part2 {
+            background-color: #9a9a9a;
+            color: white;
+            width: 90px;
+        }
+        .part3 {
+            background-color: #28a745;
+            color: black;
+            width: 50px;
+        }
+        .part4 {
+            background-color: #28a745;
+            color: black;
+            width: 20px;
+        }
+        .critical {
+            background-color: rgb(161, 0, 0);
+            color: white;
+
+        }
+        .high {
+            background-color: rgb(255, 136, 0);
+        }
+        .medium {
+            background-color: rgb(255, 230, 0);
+        }
+        .low {
+            background-color: rgb(0, 96, 0);
+        }
+        ul {
+            list-style-type: none; /* remove bullet points */
+            padding: 0; /* remove padding */
+        }
+    </style>    
+</head>
+<body>
+    <header>
+      <h1>Current CVEs</h1>
+      <h2>{{ product }} {{version}}</h2>
+      <p>{{ current_date.strftime('%B %d, %Y %H:%m') }}</p>
+    </header>    
+    {% if cves_list %}
+    <ul>
+        {% for cve in cves_list %}
+            <li>
+            <div class="badge">
+                <a text-decoration: none; href="{{ cve[5] }}">
+                <div class="part1" title = "{{cve[4]}}">{{ cve[0] }}</div>
+                </a>
+                <div class="part2">{{ cve[1] }}</div>
+                {% if cve[3] == 'CRITICAL' %}
+                    <div class="part3 critical">{{ cve[3] }}</div>
+                    <div class="part4 critical">{{ cve[2] }}</div>
+                {% elif cve[3] == 'HIGH' %}
+                    <div class="part3 high">{{ cve[3] }}</div>
+                    <div class="part4 high">{{ cve[2] }}</div>
+                {% elif cve[3] == 'MEDIUM' %}
+                    <div class="part3 medium">{{ cve[3] }}</div>
+                    <div class="part4 medium">{{ cve[2] }}</div>
+                {% else %}
+                    <div class="part3 low">{{ cve[3] }}</div> 
+                    <div class="part4 low">{{ cve[2] }}</div>
+                {% endif %}               
+            </div>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No lists found.</p>
+    {% endif %}
+</body>
+</html>

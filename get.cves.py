@@ -1,4 +1,5 @@
 import requests
+import sys
 import json
 
 def get_cves_for_product(product, version):
@@ -28,9 +29,12 @@ def get_cves_for_product(product, version):
 
     return cves
 
-# Use the function
-# product = "jira_data_center"
-product = "jira"
-version = "8.19"
+# get the version and product from the command line
+product = sys.argv[1]
+version = sys.argv[2]
+# Call with the product and version
+# e.g. jira_data_center 8.19
+# e.g. jira 8.19
+
 cves = get_cves_for_product(product, version)
 print(f"The CVEs for {product} version {version} are: {cves}")

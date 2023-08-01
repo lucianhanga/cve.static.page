@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CVEs</title>
+    <style>
+        header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>    
+</head>
+<body>
+    <header>
+      <h1>Current CVEs</h1>
+      <h2>{{ product }} {{version}}</h2>
+      <p>{{ current_date.strftime('%A, %B %d, %Y %H:%m') }}</p>
+    </header>    
+    {% if cves_list %}
+    <ul>
+        {% for cve in cves_list %}
+            <li>
+                <ul>
+                {% for item in cve %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No lists found.</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Software Badge</title>
+    <style>
+        .badge {
+            display: inline-flex;
+        }
+        .badge > div {
+            padding: 2px 10px;
+            color: #ffffff;
+            font-weight: normal;
+            border-radius: 0px;
+        }
+        .part1 {
+            background-color: #007bff;
+            width: 60px;
+        }
+        .part2 {
+            background-color: #6c757d;
+            width: 100px;
+        }
+        .part3 {
+            background-color: #28a745;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="badge">
+        <div class="part1">{{ part1 }}</div>
+        <div class="part2">{{ part2 }}</div>
+        <div class="part3">{{ part3 }}</div>
+    </div>
+</body>
+</html>
