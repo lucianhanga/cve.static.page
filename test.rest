@@ -1,0 +1,80 @@
+
+# define the Base URL
+@BASE_URL = http://localhost:5000
+
+###
+
+# test if the service is UP
+# GET request to /
+GET {{BASE_URL}}/ HTTP/1.1
+
+###
+
+# add a new entry
+#
+POST {{BASE_URL}}/api/v1/register HTTP/1.1
+content-type: application/json
+
+{
+    "product" : "jira_data_center",
+    "version" : "8.22.6"
+}
+
+### 
+
+# add a new entry
+#
+POST {{BASE_URL}}/api/v1/register HTTP/1.1
+content-type: application/json
+
+{
+    "product" : "confluence_data_center",
+    "version" : "7.20.1"
+}
+
+### 
+
+# add a new entry
+# 
+POST {{BASE_URL}}/api/v1/register HTTP/1.1
+content-type: application/json
+
+{
+    "product" : "jira_data_center",
+    "version" : "8.22.6"
+}
+
+
+### 
+
+# add a new entry
+#
+POST {{BASE_URL}}/api/v1/register HTTP/1.1
+content-type: application/json
+
+{
+    "product" : "jira_server",
+    "version" : "9.1.0"
+}
+
+
+###
+
+# get all entregistered
+#
+GET {{BASE_URL}}/api/v1/registered HTTP/1.1
+
+###
+
+# remove an entry by id
+#
+DELETE {{BASE_URL}}/api/v1/registered-id/5daabdd9-c93c-4656-96d1-c85f4afbd215 HTTP/1.1
+
+### 
+
+# remove all entries by product
+#
+DELETE {{BASE_URL}}/api/v1/registered-product/jira_data_center HTTP/1.1
+
+
+

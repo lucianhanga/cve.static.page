@@ -47,7 +47,17 @@ def filter_the_data(product, version):
 def calculate_cvss_score(cves_list):
   # get all the scores into a list
   cvss_scores = [float(cve[2]) for cve in cves_list]
-  print(cvss_scores)
+  # group the scores by severity
+  # cvss_scores_critical = [float(cve[2]) for cve in cves_list if cve[3] == 'CRITICAL']
+  # cvss_scores_high = [float(cve[2]) for cve in cves_list if cve[3] == 'HIGH']
+  # cvss_scores_medium = [float(cve[2]) for cve in cves_list if cve[3] == 'MEDIUM']
+  # cvss_scores_low = [float(cve[2]) for cve in cves_list if cve[3] == 'LOW']
+  # # print all the scores
+  # print("all: " + cvss_scores)
+  # print(cvss_scores_critical)
+  # print(cvss_scores_high)
+  # print(cvss_scores_medium)
+  # print(cvss_scores_low)
   # Average CVSS score reduce number of decimal places to two
   if len(cvss_scores) == 0:
     return 0
