@@ -3,6 +3,7 @@ import json
 import sys
 from datetime import datetime
 from jinja2 import Template
+import numpy as np
 
 # function to create the file name from the product and version
 def get_file_name(product, version):
@@ -42,6 +43,15 @@ def filter_the_data(product, version):
   # print(cves_list)
   return cves_list
 
+# calculate the CVESS score
+def calculate_cvss_score(cves_list):
+  # get all the scores into a list
+  cvss_scores = [float(cve[2]) for cve in cves_list]
+  print(cvss_scores)
+  # Average CVSS score reduce number of decimal places to two
+  if len(cvss_scores) == 0:
+    return 0
+  return round(np.mean(cvss_scores), 2)
 
 # get the product and version from command line
 product = sys.argv[1]
@@ -50,19 +60,18 @@ version = sys.argv[2]
 cves_list = filter_the_data(product = product, version = version)
 # print(cves_list)
 
-# get the current date
-current_date = datetime.now()
-
+# calculate the CVSS score
+sscore = calculate_cvss_score(cves_list)
+# print(sscore)
 
 # jinja2 template rendering
-# read the template from the file
-# template = Template(open('./templates/example1.jinja2').read())
 template = Template(open('./templates/example3.jinja2').read())
 
 # write the output to a file
 with open('output.html', 'w') as f:
   f.write(template.render(
-    current_date = current_date,
+    current_date = datetime.now(),
+    sscore = sscore,
     product = product, 
     version = version,
     cves_list=cves_list
