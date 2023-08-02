@@ -24,7 +24,9 @@
 					"ms-python.python",
 					"GitHub.vscode-pull-request-github",
 					"ZainChen.json",
-					"mohsen1.prettify-json"
+					"mohsen1.prettify-json",
+					"ms-azuretools.vscode-docker",
+					"humao.rest-client"
 				]
 			}
 		},
