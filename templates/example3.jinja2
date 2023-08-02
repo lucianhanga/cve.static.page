@@ -98,22 +98,22 @@
         {% for cve in cves_list %}
             <li>
             <div class="badge">
-                <a href="{{ cve[5] }}">
-                <div class="part1" title = "{{cve[4]}}">{{ cve[0] }}</div>
+                <a href="{{ cve['url'] }}">
+                <div class="part1" title = "{{cve['description']}}">{{ cve['id'] }}</div>
                 </a>
-                <div class="part2">{{ cve[1] }}</div>
-                {% if cve[3] == 'CRITICAL' %}
-                    <div class="part3 critical">{{ cve[3] }}</div>
-                    <div class="part4 critical">{{ cve[2] }}</div>
-                {% elif cve[3] == 'HIGH' %}
-                    <div class="part3 high">{{ cve[3] }}</div>
-                    <div class="part4 high">{{ cve[2] }}</div>
-                {% elif cve[3] == 'MEDIUM' %}
-                    <div class="part3 medium">{{ cve[3] }}</div>
-                    <div class="part4 medium">{{ cve[2] }}</div>
+                <div class="part2">{{ cve['lastModifiedDate'] }}</div>
+                {% if cve['baseSeverity'] == 'CRITICAL' %}
+                    <div class="part3 critical">{{ cve['baseSeverity'] }}</div>
+                    <div class="part4 critical">{{ cve['baseScore'] }}</div>
+                {% elif cve['baseSeverity'] == 'HIGH' %}
+                    <div class="part3 high">{{ cve['baseSeverity'] }}</div>
+                    <div class="part4 high">{{ cve['baseScore'] }}</div>
+                {% elif cve['baseSeverity'] == 'MEDIUM' %}
+                    <div class="part3 medium">{{ cve['baseSeverity'] }}</div>
+                    <div class="part4 medium">{{ cve['baseScore'] }}</div>
                 {% else %}
-                    <div class="part3 low">{{ cve[3] }}</div> 
-                    <div class="part4 low">{{ cve[2] }}</div>
+                    <div class="part3 low">{{ cve['baseSeverity'] }}</div> 
+                    <div class="part4 low">{{ cve['baseScore'] }}</div>
                 {% endif %}               
             </div>
             </li>

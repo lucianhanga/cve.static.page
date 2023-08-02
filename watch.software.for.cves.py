@@ -1,9 +1,14 @@
 import json
 import sys
 from datetime import datetime
+import time
 from flask import Flask, jsonify, request
 from jinja2 import Template
 import uuid
+import threading
+
+# import a file from the current folder 
+from get_cves import get_cves_for_product
 
 software_db_filename = 'software.json'
 software_db = []
@@ -100,6 +105,22 @@ def delete_software_product(product):
 # read the data from the file into the json object
 software_db = read_software_from_file(software_db_filename)
 
+
+# create a thread to update the database
+def update_database():
+    while True:
+        # read the data from the CVE database for the software in the database
+        for software in software_db:
+            print(software['product'], software['version'])
+            get_cves_for_product(software['product'], software['version'])
+                        
+        # wait 1 hour
+        print('Waiting 1 hour...')
+        time.sleep(5*60)
+
+# start the thread
+thread = threading.Thread(target=update_database)
+thread.start()
 
 # run the app
 if __name__ == '__main__':
