@@ -6,52 +6,54 @@ from jinja2 import Template
 import numpy as np
 
 # function to create the file name from the product and version
-def build_input_file_name(product, version):
-  return 'data.'+ product + '.' + version + '.raw.json'
-def build_output_html_file_name(product, version):
-  return 'data.'+ product + '.' + version + '.html'
-def build_output_json_file_name(product, version):
-  return 'data.'+ product + '.' + version + '.html'
+def build_input_file_name(vendor, product, version):
+  return f"data.{vendor}.{product}.{version}.raw.json"
 
+def build_output_html_file_name(vendor, product, version):
+  return f"data.{vendor}.{product}.{version}.html"
+
+def build_output_json_file_name(vendor, product, version):
+  return f"data.{vendor}.{product}.{version}.json"
 
 # read the data from the file into the raw json object
 def read_data_from_raw_file(file_name):
   with open(file_name) as f:
     return json.load(f)
 
-def filter_the_data(product, version):
+def filter_the_data(vendor, product, version):
   # read the data from the file
   try:
-    cves = read_data_from_raw_file(build_input_file_name(product, version))
+    cves = read_data_from_raw_file(build_input_file_name(vendor, product, version))
   except:
-    print("No data found for " + product + " " + version)
+    print(f"Error reading file {build_input_file_name(vendor, product, version)}")
     return []
   
   # create an empty array
   cves_list = []
   # iterate over the CVEs and select the signigicat fields
-  for cve in cves['result']['CVE_Items']:
+  for cve in cves['vulnerabilities']:
       # append to the array
       cves_list.append(
         # a list of objects
         {
           # the CVE ID
-          'id' : cve['cve']['CVE_data_meta']['ID'],
+          'id' : cve['cve']['id'],
           # the last modified date
-          'lastModifiedDate' : cve['lastModifiedDate'],
-          # the base score
-          'baseScore' : cve['impact']['baseMetricV3']['cvssV3']['baseScore'],
-          # the base severity
-          'baseSeverity' : cve['impact']['baseMetricV3']['cvssV3']['baseSeverity'],
+          'lastModified' : cve['cve']['lastModified'],
           # the description
-          'description' : cve['cve']['description']['description_data'][0]['value'],
+          'description' : cve['cve']['descriptions'][0]['value'],
+          # the base score
+          'baseScore' : cve['cve']['metrics']['cvssMetricV31'][0]['cvssData']['baseScore'],
+          # the base severity
+          'baseSeverity' : cve['cve']['metrics']['cvssMetricV31'][0]['cvssData']['baseSeverity'],
           # build the URL for the CVE in MITRE
-          'url' : "https://cve.mitre.org/cgi-bin/cvename.cgi?name=" + cve['cve']['CVE_data_meta']['ID'],
+          'url' : f"https://www.cve.org/CVERecord?id={cve['cve']['id']}",
         }
       )		
-  # print(cves_list)
+    # print(cves_list)
   # write it into the output json file
-  with open(build_output_json_file_name(product, version), 'w') as outfile:
+  print("Writing data to " + build_output_json_file_name(vendor, product, version))
+  with open(build_output_json_file_name(vendor, product, version), 'w') as outfile:
     json.dump(cves_list, outfile)
   return cves_list
 
@@ -77,15 +79,17 @@ def calculate_cvss_score(cves_list):
 
 
 # process the data
-def process_data(product, version):
+def process_cves_for_product(vendor, product, version):
   # filter the data
-  cves_list = filter_the_data(product, version)
+  print(f"Filtering data for {vendor}.{product}.{version}")
+  cves_list = filter_the_data(vendor, product, version)
+  print(f"Found {len(cves_list)} CVEs")
   # calculate the CVSS score
   sscore = calculate_cvss_score(cves_list)
   # jinja2 template rendering
   template = Template(open('./templates/example3.jinja2').read())
   # write the output to a file
-  with open(build_output_html_file_name(product, version), 'w') as f:
+  with open(build_output_html_file_name(vendor, product, version), 'w') as f:
     f.write(template.render(
       current_date = datetime.now(),
       sscore = sscore,
@@ -97,9 +101,10 @@ def process_data(product, version):
 # execute the code if the file is run directly
 if __name__ == "__main__":
   # get the product and version from command line
-  product = sys.argv[1]
-  version = sys.argv[2]    
+  vendor = sys.argv[1]
+  product = sys.argv[2]
+  version = sys.argv[3]    
   # process the data
-  process_data(product, version)
+  process_cves_for_product(vendor, product, version)
 
 

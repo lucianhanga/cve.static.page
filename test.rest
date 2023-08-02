@@ -1,6 +1,6 @@
 
 # define the Base URL
-@BASE_URL = http://localhost:5000
+@BASE_URL = http://localhost:80
 
 ###
 
@@ -16,18 +16,7 @@ POST {{BASE_URL}}/api/v1/register HTTP/1.1
 content-type: application/json
 
 {
-    "product" : "jira_data_center",
-    "version" : "8.22.6"
-}
-
-### 
-
-# add a new entry
-#
-POST {{BASE_URL}}/api/v1/register HTTP/1.1
-content-type: application/json
-
-{
+    "vendor" : "atlassian",
     "product" : "confluence_data_center",
     "version" : "7.20.1"
 }
@@ -40,6 +29,7 @@ POST {{BASE_URL}}/api/v1/register HTTP/1.1
 content-type: application/json
 
 {
+    "vendor" : "atlassian",
     "product" : "jira_data_center",
     "version" : "8.22.6"
 }
@@ -53,6 +43,7 @@ POST {{BASE_URL}}/api/v1/register HTTP/1.1
 content-type: application/json
 
 {
+    "vendor" : "atlassian",
     "product" : "jira_server",
     "version" : "9.1.0"
 }
