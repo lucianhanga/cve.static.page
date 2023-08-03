@@ -28,8 +28,7 @@ def get_cves_for_product(vendor, product, version):
     # save to file and append version to the filename
     # how to append the version ? 
     with open(f"data.{vendor}.{product}.{version}.raw.json", 'w') as outfile:
-        json.dump(data, outfile)
-
+        json.dump(obj=data, fp=outfile, indent=2)
 
 # run the script if it is called from the command line
 if __name__ == "__main__":
@@ -40,3 +39,4 @@ if __name__ == "__main__":
     # Call with the product and version
     # e.g. atlassian jira_data_center 8.19
     get_cves_for_product(vendor, product, version)
+

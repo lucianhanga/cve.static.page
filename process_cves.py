@@ -54,7 +54,7 @@ def filter_the_data(vendor, product, version):
   # write it into the output json file
   print("Writing data to " + build_output_json_file_name(vendor, product, version))
   with open(build_output_json_file_name(vendor, product, version), 'w') as outfile:
-    json.dump(cves_list, outfile)
+    json.dump(obj = cves_list, fp=outfile, indent=2)
   return cves_list
 
 # calculate the CVESS score
@@ -78,6 +78,56 @@ def calculate_cvss_score(cves_list):
   return round(np.mean(cvss_scores), 2)
 
 
+def update_the_data(vendor, product, version, sscore, cves_list):
+  # rewrite the extended json file
+  software_db = { 'software': [ ] }
+  try:
+    with open('software.extended.json') as f:
+      software_db = json.load(f)
+  except:
+    print("Error reading file software.extended.json")
+    software_db = { 'software': [ ] }
+
+  # update the software.json file
+  print(software_db)
+  for software in software_db['software']:
+    # check if the currently processed product is in the database
+    if  software['product'] == product and \
+        software['version'] == version and \
+        software['vendor'] == vendor:
+      print(f"Updating data for {vendor}.{product}.{version}")
+      print(software)
+      # update the data
+      software['sscore'] = sscore
+      software['cves'] = len(cves_list)
+      # html file name
+      software['html'] = build_output_html_file_name(vendor, product, version)
+      # json file name
+      software['json'] = build_output_json_file_name(vendor, product, version)
+      # raw json file name
+      software['raw'] = build_input_file_name(vendor, product, version)
+      # write the output to a file
+      with open('software.json', 'w') as f:
+        json.dump(obj = software_db, fp = f, indent=2)
+      return
+  # if the product is not in the database, add it
+  print(f"Adding data for {vendor}.{product}.{version}")
+  software_db['software'].append(
+    {
+      'vendor': vendor,
+      'product': product,
+      'version': version,
+      'sscore': sscore,
+      'cves': len(cves_list),
+      'html': build_output_html_file_name(vendor, product, version),
+      'json': build_output_json_file_name(vendor, product, version),
+      'raw': build_input_file_name(vendor, product, version)
+    }
+  )
+  # write the output to a file
+  with open('software.extended.json', 'w') as f:
+    json.dump(obj = software_db, fp = f, indent=2)
+
 # process the data
 def process_cves_for_product(vendor, product, version):
   # filter the data
@@ -87,7 +137,7 @@ def process_cves_for_product(vendor, product, version):
   # calculate the CVSS score
   sscore = calculate_cvss_score(cves_list)
   # jinja2 template rendering
-  template = Template(open('./templates/example3.jinja2').read())
+  template = Template(open('./templates/software.jinja2.html').read())
   # write the output to a file
   with open(build_output_html_file_name(vendor, product, version), 'w') as f:
     f.write(template.render(
@@ -97,6 +147,9 @@ def process_cves_for_product(vendor, product, version):
       version = version,
       cves_list=cves_list
     ))
+  # update the software.json file
+  update_the_data(vendor, product, version, sscore, cves_list)
+
 
 # execute the code if the file is run directly
 if __name__ == "__main__":
