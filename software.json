@@ -1,0 +1,28 @@
+{
+    "software": [
+        {
+            "vendor": "atlassian",
+            "product": "jira_server",
+            "version": "9.1.0",
+            "id": "53cc8e4f-4bbb-4f1f-91dd-0bf338a8aaec"
+        },
+        {
+            "vendor": "atlassian",
+            "product": "confluence_data_center",
+            "version": "7.20.1",
+            "id": "39f0650a-a3b5-4efe-ac18-0403458e9e81"
+        },
+        {
+            "vendor": "atlassian",
+            "product": "confluence_data_center",
+            "version": "7.1.1",
+            "id": "39f1650a-a3b5-4efe-ac18-04a3458e9e81"
+        },
+        {
+            "vendor": "atlassian",
+            "product": "jira_data_center",
+            "version": "8.22.6",
+            "id": "0c97821e-fbfe-4c64-ac41-05c3f3206572"
+        }
+    ]
+}
