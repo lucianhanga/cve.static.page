@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CVEs</title>
+    <style>
+        header {
+            background-color: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+        }
+        .badge {
+            display: inline-flex;
+        }
+        .badge > div {
+            padding: 2px 10px;
+            font-size: 10px;
+            font-weight: normal;
+            border-radius: 2px;
+        }
+        .badge > a > div {
+            padding: 2px 10px;
+            font-size: 10px;
+            font-weight: normal;
+            border-radius: 2px;
+        }
+        .part1 {
+            background-color: #1b73ff;
+            color: white;
+            width: 80px;
+        }
+        .part2 {
+            background-color: #9a9a9a;
+            color: white;
+            width: 90px;
+        }
+        .part3 {
+            background-color: #28a745;
+            color: black;
+            width: 50px;
+        }
+        .part4 {
+            background-color: #28a745;
+            color: black;
+            width: 20px;
+        }
+        .critical {
+            background-color: rgb(161, 0, 0);
+            color: white;
+
+        }
+        .high {
+            background-color: rgb(255, 136, 0);
+        }
+        .medium {
+            background-color: rgb(255, 230, 0);
+        }
+        .low {
+            background-color: rgb(0, 96, 0);
+        }
+
+        .criticaltext {
+            color: rgb(161, 0, 0);
+        }
+        .hightext {
+            color: rgb(255, 136, 0);
+        }
+        .mediumtext {
+            color: rgb(255, 230, 0);
+        }
+        .lowtext {
+            color: rgb(0, 96, 0);
+        }
+        ul {
+            list-style-type: none; /* remove bullet points */
+            padding: 0; /* remove padding */
+        }
+    </style>    
+</head>
+<body>
+    <header>
+      <h1>
+        <div>Overall CVESS Score: </div>
+        {% if sscore >= 9.0 %}
+            <div class="criticaltext">{{ sscore }}</div>
+        {% elif sscore >= 7.0 %}
+            <div class="hightext">{{ sscore }}</div>
+        {% elif sscore >= 4.0 %}
+            <div class="mediumtext">{{ sscore }}</div>
+        {% else %}
+            <div class="lowtext">{{ sscore }}</div>
+        {% endif %}
+    </h1>
+      <h2>{{ product }} {{version}}</h2>
+      <p>{{ current_date.strftime('%B %d, %Y %H:%M UTC') }}</p>
+    </header>    
+    {% if cves_list %}
+    <ul>
+        {% for cve in cves_list %}
+            <li>
+            <div class="badge">
+                <a href="{{ cve['url'] }}">
+                <div class="part1" title = "{{cve['description']}}">{{ cve['id'] }}</div>
+                </a>
+                <div class="part2">{{ cve['lastModifiedDate'] }}</div>
+                {% if cve['baseSeverity'] == 'CRITICAL' %}
+                    <div class="part3 critical">{{ cve['baseSeverity'] }}</div>
+                    <div class="part4 critical">{{ cve['baseScore'] }}</div>
+                {% elif cve['baseSeverity'] == 'HIGH' %}
+                    <div class="part3 high">{{ cve['baseSeverity'] }}</div>
+                    <div class="part4 high">{{ cve['baseScore'] }}</div>
+                {% elif cve['baseSeverity'] == 'MEDIUM' %}
+                    <div class="part3 medium">{{ cve['baseSeverity'] }}</div>
+                    <div class="part4 medium">{{ cve['baseScore'] }}</div>
+                {% else %}
+                    <div class="part3 low">{{ cve['baseSeverity'] }}</div> 
+                    <div class="part4 low">{{ cve['baseScore'] }}</div>
+                {% endif %}               
+            </div>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No CVEs</p>
+    {% endif %}
+</body>
+</html>
