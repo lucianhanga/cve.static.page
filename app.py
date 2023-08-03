@@ -25,12 +25,45 @@ def read_software_from_file(filename):
             json.dump({'software': []}, f)
     return []
 
+# generate the toc file
+def generate_toc():
+    # read the software from the file
+    software_db = read_software_from_file(software_db_filename_extended)
+    # regenerate the toc.html file
+    print("Regenerating toc.html")
+    toc_template = Template(open('./templates/toc.jinja2.html').read())
+    with open('data.toc.html', 'w') as f:
+        f.write(toc_template.render(
+            current_date = datetime.now(),
+            software_list = software_db
+        ))
+
+
+# create a thread to update the database
+def update_data():
+    # update the collection of CVEs
+    print("Updating the collection of CVEs")
+    # read the software from the file
+    software_db = read_software_from_file(software_db_filename)
+    # read the data from the CVE database for the software in the database
+    for software in software_db:
+        try:    
+            print(software['vendor'], software['product'], software['version'])
+            get_cves_for_product(software['vendor'], software['product'], software['version'])
+            process_cves_for_product(software['vendor'], software['product'], software['version'])
+        except:
+            print(f"Error processing {software['vendor']}.{software['product']}.{software['version']}")
+    # generate the toc file
+    generate_toc()
+
+
 # create the Flask app
 app = Flask(__name__)
 
 # POST multiple/all softwares to the database
 @app.route('/api/v1/registerall', methods=['POST'])
 def register_software_all():
+    print("Registering all software")
     # get the data from the request
     data = request.get_json()
     # print(data)
@@ -42,8 +75,9 @@ def register_software_all():
     if not list_software:
         return jsonify({'error': 'Invalid data'}), 400
     # go through the list of software
-    already_registered = False
     for sw in list_software:
+        print(f"NOW: {sw}" )
+        already_registered = False
         # check if the json has the required fields
         if  not 'product' in sw or \
             not 'version' in sw or \
@@ -51,8 +85,10 @@ def register_software_all():
             # just print the error and continue
             print('Missing data')
             continue
+        print("now2")
         # read the software from the file
         software_db = read_software_from_file(software_db_filename)
+        print("now3")
         # check if does not exist already in the database
         for software in software_db:
             if  software['product'] == sw['product'] and \
@@ -62,6 +98,7 @@ def register_software_all():
                 print('Software already registered')
                 already_registered = True
                 break
+        print("now4: ", already_registered)
         # if the software is already registered, continue
         if already_registered:
             continue
@@ -69,11 +106,15 @@ def register_software_all():
         sw['id'] = str(uuid.uuid4())
         # add the software to the database
         software_db.append(sw)
-    # write the database to a file
-    with open(software_db_filename, 'w') as f:
-        json.dump({'software': software_db}, f)
+        # write the database to a file
+        with open(software_db_filename, 'w') as f:
+            json.dump({'software': software_db}, f)
     # print the database
-    # print(software_db)
+    print(software_db)
+    # Create a thread that will run your_function
+    thread = threading.Thread(target=update_data)
+    # Start the thread
+    thread.start()   
     # return ok
     return jsonify({'status': 'ok'}), 200
 
@@ -105,7 +146,11 @@ def register_software():
     with open(software_db_filename, 'w') as f:
         json.dump({'software': software_db}, f)
     # print the database
-    print(software_db)
+    # print(software_db)
+    # Create a thread that will run your_function
+    thread = threading.Thread(target=update_data)
+    # Start the thread
+    thread.start()
     # return ok
     return jsonify({'status': 'ok'}), 200
 
@@ -131,6 +176,10 @@ def delete_software_id(id):
             # write the database to a file
             with open(software_db_filename, 'w') as f:
                 json.dump({'software': software_db}, f)
+            # Create a thread that will run your_function
+            thread = threading.Thread(target=update_data)
+            # Start the thread
+            thread.start()
             # return ok
             return jsonify({'status': 'ok'}), 200
     # return not found
@@ -153,8 +202,13 @@ def delete_software_product(product):
         # write the database to a file
         with open(software_db_filename, 'w') as f:
             json.dump({'software': software_db}, f)
+        # Create a thread that will run your_function
+        thread = threading.Thread(target=update_data)
+        # Start the thread
+        thread.start()   
         # return ok
         return jsonify({'status': 'ok', 'count' : count}), 200 
+    
     # return not found
     return jsonify({'error': 'Software not found'}), 404
 
@@ -169,7 +223,21 @@ def home():
 def get_software_web_list():
     try:
         # read the template from the file
-        with open('./toc.html') as f:  
+        with open('./data.toc.html') as f:  
+            template = Template(f.read())
+    except:
+        # return not found web page
+        return 'Not found', 404
+
+    # return the rendered template
+    return template.render()
+
+# return the web page with the list of registered software and links to the vluernability page
+@app.route('/web/v1/<string:page>', methods=['GET'])
+def get_software_web_list_page(page):
+    try:
+        # read the template from the file
+        with open(f"./{page}") as f:  
             template = Template(f.read())
     except:
         # return not found web page
@@ -193,40 +261,20 @@ def get_software_web(vendor, product, version):
     # return the rendered template
     return template.render()
 
-# generate the toc file
-def generate_toc():
-    # read the software from the file
-    software_db = read_software_from_file(software_db_filename_extended)
-    # regenerate the toc.html file
-    print("Regenerating toc.html")
-    toc_template = Template(open('./templates/toc.jinja2.html').read())
-    with open('data.toc.html', 'w') as f:
-        f.write(toc_template.render(
-            current_date = datetime.now(),
-            software_list = software_db
-        ))
 
-
-# create a thread to update the database
-def update_data():
+def update_data_thread():
     while True:
-        # read the software from the file
-        software_db = read_software_from_file(software_db_filename)
-        # read the data from the CVE database for the software in the database
-        for software in software_db:    
-            print(software['vendor'], software['product'], software['version'])
-            get_cves_for_product(software['vendor'], software['product'], software['version'])
-            process_cves_for_product(software['vendor'], software['product'], software['version'])
-        # generate the toc file
-        generate_toc()
+        # update the data
+        update_data()
         # wait 1 hour
         print('Waiting 1 hour...')
-        time.sleep(60*60)
+        time.sleep(12*60*60)
 
-# start the thread
-thread = threading.Thread(target=update_data)
-thread.start()
 
 # run the app
 if __name__ == '__main__':
-    app.run(debug=True, host='localhost', port=80)
+    # start the thread
+    thread = threading.Thread(target=update_data_thread)
+    thread.start()
+    # run the app
+    app.run(debug=False, host='localhost', port=80)

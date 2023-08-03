@@ -5,7 +5,7 @@ WORKDIR /app
 # copy the requirements file to the app directory
 COPY requirements.txt .
 # install the requirements
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 # install the gunicon for the flask app
 RUN pip install gunicorn
 # copy the template files to the app directory
@@ -16,10 +16,7 @@ COPY process_cves.py .
 COPY app.py .
 COPY software.json .
 # expose the port 80
+# start only one instance of the app with gunicorn on port 80
 EXPOSE 80
-# define the flaks app environment variable
-ENV FLASK_APP=app.py
-# define the flask app port
-ENV FLASK_RUN_PORT=80
-# start the flask app with gunicon
+# start the app
 ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]

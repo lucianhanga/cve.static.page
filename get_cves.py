@@ -3,6 +3,7 @@ import sys
 import json
 
 def get_cves_for_product(vendor, product, version):
+    print(f"Getting CVEs for {vendor}.{product}.{version}")
     # Define base URL for the NVD API
     # old # base_url = "https://services.nvd.nist.gov/rest/json/cves/1.0"
     base_url = "https://services.nvd.nist.gov/rest/json/cves/2.0"

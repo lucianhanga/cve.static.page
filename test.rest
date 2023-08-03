@@ -18,8 +18,18 @@ content-type: application/json
 {
     "vendor" : "atlassian",
     "product" : "confluence_data_center",
-    "version" : "7.20.1"
+    "version" : "7.1.1"
 }
+
+# write it as curl command
+curl --location --request POST 'http://localhost:80/api/v1/register' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "vendor" : "atlassian",
+    "product" : "confluence_data_center",
+    "version" : "7.1.1"
+}'
+
 
 ### 
 

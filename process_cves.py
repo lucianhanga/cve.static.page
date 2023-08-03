@@ -89,14 +89,14 @@ def update_the_data(vendor, product, version, sscore, cves_list):
     software_db = { 'software': [ ] }
 
   # update the software.json file
-  print(software_db)
+  # print(software_db)
   for software in software_db['software']:
     # check if the currently processed product is in the database
     if  software['product'] == product and \
         software['version'] == version and \
         software['vendor'] == vendor:
       print(f"Updating data for {vendor}.{product}.{version}")
-      print(software)
+      # print(software)
       # update the data
       software['sscore'] = sscore
       software['cves'] = len(cves_list)
@@ -107,7 +107,7 @@ def update_the_data(vendor, product, version, sscore, cves_list):
       # raw json file name
       software['raw'] = build_input_file_name(vendor, product, version)
       # write the output to a file
-      with open('software.json', 'w') as f:
+      with open('software.extended.json', 'w') as f:
         json.dump(obj = software_db, fp = f, indent=2)
       return
   # if the product is not in the database, add it
