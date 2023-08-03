@@ -1,0 +1,19 @@
+{
+    "software": [
+        {
+            "vendor": "atlassian",
+            "product": "confluence_data_center",
+            "version": "7.20.1"
+        },
+        {
+            "vendor": "atlassian",
+            "product": "jira_data_center",
+            "version": "8.22.6"
+        },
+        {
+            "vendor": "atlassian",
+            "product": "jira_server",
+            "version": "9.1.0"
+        }
+    ]
+}
