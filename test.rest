@@ -67,5 +67,29 @@ DELETE {{BASE_URL}}/api/v1/registered-id/5daabdd9-c93c-4656-96d1-c85f4afbd215 HT
 #
 DELETE {{BASE_URL}}/api/v1/registered-product/jira_data_center HTTP/1.1
 
+### 
 
+# add a configuration
+#
+POST {{BASE_URL}}/api/v1/registerall HTTP/1.1
+content-type: application/json
 
+{
+    "software": [
+        {
+            "vendor": "atlassian",
+            "product": "confluence_data_center",
+            "version": "7.20.1"
+        },
+        {
+            "vendor": "atlassian",
+            "product": "jira_data_center",
+            "version": "8.22.6"
+        },
+        {
+            "vendor": "atlassian",
+            "product": "jira_server",
+            "version": "9.1.0"
+        }
+    ]
+}
