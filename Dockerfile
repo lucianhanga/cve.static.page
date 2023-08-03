@@ -9,11 +9,12 @@ RUN pip install -r requirements.txt
 # install the gunicon for the flask app
 RUN pip install gunicorn
 # copy the template files to the app directory
-COPY templates/ .
+COPY templates ./templates
 # copy the python files to the app directory
 COPY get_cves.py .
 COPY process_cves.py .
 COPY app.py .
+COPY software.json .
 # expose the port 80
 EXPOSE 80
 # define the flaks app environment variable

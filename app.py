@@ -221,7 +221,7 @@ def update_data():
         generate_toc()
         # wait 1 hour
         print('Waiting 1 hour...')
-        time.sleep(5*60)
+        time.sleep(60*60)
 
 # start the thread
 thread = threading.Thread(target=update_data)
